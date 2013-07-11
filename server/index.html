@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Example WebSocket chat server.</title>
+<script src="http://localhost:3000/socket.io/socket.io.js"></script>
+<script>
+	var socket = io.connect('http://localhost:3000');
+	socket.emit('my event', "hello world.");
+</script>
+</head>
+<body>
+	Hello world sent to server.
+</body>
+</html>

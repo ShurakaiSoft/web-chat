@@ -1,0 +1,22 @@
+{
+  "name": "web-chat",
+  "version": "0.1.0",
+  "description": "web-chat",
+  "main": "./server/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified! Configure in package.json\" && exit 1"
+  },
+  "dependencies": {
+	  "connect": "*",
+	  "socket.io": "*"
+  },
+  "repository": "",
+  "keywords": [
+    "Node.js",
+    "chat",
+    "web"
+  ],
+  "author": "",
+  "license": "BSD",
+  "readmeFilename": "README.md"
+}
