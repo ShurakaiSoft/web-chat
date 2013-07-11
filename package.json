@@ -10,7 +10,7 @@
 	  "connect": "*",
 	  "socket.io": "*"
   },
-  "repository": "",
+  "repository": "https://github.com/ShurakaiSoft/web-chat.git",
   "keywords": [
     "Node.js",
     "chat",
