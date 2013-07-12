@@ -41,6 +41,11 @@
 			addMessage(content);
 		});
 		
+		socket.on('login', function () {
+			var username = prompt('What username would you like to use?');
+			socket.emit('login', username);
+		});
+		
 		var inputElement = document.getElementById('input');
 		
 		inputElement.onkeydown = function(keyboardEvent) {

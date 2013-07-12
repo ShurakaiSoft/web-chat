@@ -27,6 +27,27 @@ function handler(req, res) {
 io.sockets.on('connection', function (socket) {
 	socket.on('clientMessage', function (content) {
 		socket.emit('serverMessage', 'You said: ' + content);
-		socket.broadcast.emit('serverMessage', socket.id + ' said: ' + content);
+		
+		socket.get('username', function (err, username) {
+			if (!username) {
+				username = socket.id;
+			}
+			socket.broadcast.emit('serverMessage', username + ' said: ' + content);
+		});
 	});
+	
+	
+	socket.on('login', function (username) {
+		socket.set('username', username, function (err) {
+			if (err) {
+				throw err;
+			}
+			socket.emit('serverMessage', 'Currently logged in as ' + username);
+			socket.broadcast.emit('serverMessage', 'User ' + username + ' logged in');
+		});
+	});
+	
+	socket.emit('login');
+	
 });
+
