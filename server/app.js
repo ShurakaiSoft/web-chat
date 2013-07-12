@@ -25,7 +25,8 @@ function handler(req, res) {
 }
 
 io.sockets.on('connection', function (socket) {
-	socket.on('my event', function (content) {
-		console.log(content);
+	socket.on('clientMessage', function (content) {
+		socket.emit('serverMessage', 'You said: ' + content);
+		socket.broadcast.emit('serverMessage', socket.id + ' said: ' + content);
 	});
 });

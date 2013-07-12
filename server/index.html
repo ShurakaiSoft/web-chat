@@ -3,13 +3,56 @@
 <head>
 <meta charset="UTF-8">
 <title>Example WebSocket chat server.</title>
-<script src="http://localhost:3000/socket.io/socket.io.js"></script>
-<script>
-	var socket = io.connect('http://localhost:3000');
-	socket.emit('my event', "hello world.");
-</script>
+<style type="text/css">
+	#input {
+		width:200px;
+	}
+	#messages {
+		position:fixed;
+		top:40px;
+		bottom:8px;
+		left:8px;
+		right:8px;
+		border:1px solid #EEE;
+		padding:8px;
+	}
+</style>
 </head>
 <body>
-	Hello world sent to server.
+	your message:
+	<input type="text" id="input">
+	<div id="messages"></div>
+	<script src="http://localhost:3000/socket.io/socket.io.js"></script>
+	<script>
+		var messagesElement = document.getElementById('messages');
+		var lastMessageElement = null;
+		
+		function addMessage(message) {
+			var newMessageElement = document.createElement('div');
+			var newMessageText = document.createTextNode(message);
+			
+			newMessageElement.appendChild(newMessageText);
+			messagesElement.insertBefore(newMessageElement, lastMessageElement);
+			lastMessageElement = newMessageElement;
+		}
+		
+		var socket = io.connect('http://localhost:3000');
+		socket.on('serverMessage', function (content) {
+			addMessage(content);
+		});
+		
+		var inputElement = document.getElementById('input');
+		
+		inputElement.onkeydown = function(keyboardEvent) {
+			if (keyboardEvent.keyCode === 13) {
+				socket.emit('clientMessage', inputElement.value);
+				inputElement.value = '';
+				return false;
+			} else {
+				return true;
+			}
+		};
+	
+	</script>
 </body>
 </html>
