@@ -47,6 +47,16 @@ io.sockets.on('connection', function (socket) {
 		});
 	});
 	
+	socket.on('disconnect', function () {
+		socket.get('username', function (err, username) {
+			if (!username) {
+				username = socket.id;
+			}
+			socket.broadcast.emit('serverMessage', "User " + username + " disconnected");
+		});
+		
+	});
+	
 	socket.emit('login');
 	
 });
