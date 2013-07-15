@@ -46,11 +46,28 @@
 			socket.emit('login', username);
 		});
 		
+		function sendCommand(command, args) {
+			if (command === 'j') {
+				socket.emit('join', args);
+			} else {
+				alert('unknown command: ' + command);
+			}
+		}
+		
+		function sendMessage(message) {
+			var commandMatch = message.match(/^\/(\w*)(.*)/);
+			if (commandMatch) {
+				sendCommand(commandMatch[1], commandMatch[2].trim());
+			} else {
+				socket.emit('clientMessage', message);
+			}
+		}
+		
 		var inputElement = document.getElementById('input');
 		
 		inputElement.onkeydown = function(keyboardEvent) {
 			if (keyboardEvent.keyCode === 13) {
-				socket.emit('clientMessage', inputElement.value);
+				sendMessage(inputElement.value);
 				inputElement.value = '';
 				return false;
 			} else {

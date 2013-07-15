@@ -32,10 +32,19 @@ io.sockets.on('connection', function (socket) {
 			if (!username) {
 				username = socket.id;
 			}
-			socket.broadcast.emit('serverMessage', username + ' said: ' + content);
+			socket.get('room', function (err, room) {
+				if (err) {
+					throw err;
+				}
+				var broadcast = socket.broadcast;
+				var message = content;
+				if (room) {
+					broadcast.to(room);
+				}
+				broadcast.emit('serverMessage', username + ' said:' + message);
+			});
 		});
 	});
-	
 	
 	socket.on('login', function (username) {
 		socket.set('username', username, function (err) {
@@ -46,7 +55,7 @@ io.sockets.on('connection', function (socket) {
 			socket.broadcast.emit('serverMessage', 'User ' + username + ' logged in');
 		});
 	});
-	
+
 	socket.on('disconnect', function () {
 		socket.get('username', function (err, username) {
 			if (!username) {
@@ -55,6 +64,31 @@ io.sockets.on('connection', function (socket) {
 			socket.broadcast.emit('serverMessage', "User " + username + " disconnected");
 		});
 		
+	});
+
+	socket.on('join', function (room) {
+		socket.get('room', function (err, oldRoom) {
+			if (err) {
+				throw err;
+			}
+			socket.set('room', room, function (err) {
+				if (err) {
+					throw err;
+				}
+				socket.join(room);
+				if (oldRoom) {
+					socket.leave(oldRoom);
+				}
+				socket.emit('serverMessage', 'You joined room ' + room);
+				socket.get('username', function (err, username) {
+					if (!username) {
+						username = socket.id;
+					}
+					socket.broadcast.to(room).emit('serverMessage', 'User ' + username
+							+ ' joined this room');
+				});
+			});
+		});
 	});
 	
 	socket.emit('login');
