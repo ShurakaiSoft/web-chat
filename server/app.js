@@ -24,7 +24,10 @@ function handler(req, res) {
 	});
 }
 
-io.sockets.on('connection', function (socket) {
+var chat = io.of('/chat');
+
+chat.on('connection', function (socket) {
+	console.log('got connection');
 	socket.on('clientMessage', function (content) {
 		socket.emit('serverMessage', 'You said: ' + content);
 		
@@ -84,14 +87,15 @@ io.sockets.on('connection', function (socket) {
 					if (!username) {
 						username = socket.id;
 					}
-					socket.broadcast.to(room).emit('serverMessage', 'User ' + username
-							+ ' joined this room');
+					socket.broadcast.to(room).emit('serverMessage', 'User ' + username +
+							' joined this room');
 				});
 			});
 		});
 	});
 	
 	socket.emit('login');
+	console.log('sending log in request to new user');
 	
 });
 
